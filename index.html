@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CR TraderLayer — Gerador de Licenças</title>
+<meta name="robots" content="noindex, nofollow" />
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          navy:   { 950: '#070d1c', 900: '#0b1428', 850: '#0f1b35', 800: '#132240', 700: '#1b2d52' },
+          gold:   { 300: '#ffe29a', 400: '#f6cf6b', 500: '#e6b23e', 600: '#c8932a' },
+          silver: { 100: '#e7ecf5', 300: '#b7c1d6', 400: '#8c99b4', 500: '#5f6c8a' },
+        },
+        fontFamily: { sans: ['Sora', 'system-ui', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] },
+      },
+    },
+  };
+</script>
+<style>
+  html, body { background: #070d1c; }
+  .glow-gold { box-shadow: 0 0 0 1px rgba(230,178,62,.25), 0 18px 48px -12px rgba(230,178,62,.35); }
+  .card-ring { box-shadow: 0 0 0 1px rgba(140,153,180,.14), 0 30px 70px -30px rgba(0,0,0,.8); }
+  .bg-aura {
+    background:
+      radial-gradient(60% 50% at 50% 0%, rgba(230,178,62,.10), transparent 70%),
+      radial-gradient(45% 40% at 85% 20%, rgba(27,45,82,.55), transparent 70%),
+      radial-gradient(50% 50% at 10% 90%, rgba(27,45,82,.45), transparent 70%);
+  }
+  .gold-text { background: linear-gradient(180deg,#ffe29a,#e6b23e); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  input::placeholder { color: #5f6c8a; }
+  .fade-in { animation: fade .4s ease both; }
+  @keyframes fade { from { opacity: 0; transform: translateY(8px) } to { opacity: 1; transform: none } }
+</style>
+</head>
+<body class="min-h-screen bg-navy-950 bg-aura text-silver-100 font-sans antialiased selection:bg-gold-500/30">
+
+  <div class="mx-auto flex min-h-screen max-w-md flex-col px-4 py-8 sm:py-12">
+
+    <!-- Cabeçalho -->
+    <header class="mb-8 text-center">
+      <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-b from-gold-400 to-gold-600 text-navy-950 glow-gold">
+        <svg viewBox="0 0 24 24" class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2l2.4 5 5.6.8-4 4 1 5.6L12 20l-5 2.4 1-5.6-4-4 5.6-.8z"/>
+        </svg>
+      </div>
+      <h1 class="text-2xl font-extrabold tracking-tight gold-text">CR TraderLayer</h1>
+      <p class="mt-1 text-sm text-silver-400">Gerador de Licenças · Painel do Administrador</p>
+    </header>
+
+    <!-- ===================== LOGIN ===================== -->
+    <section id="login" class="hidden fade-in flex-1">
+      <div class="rounded-3xl border border-silver-500/15 bg-navy-900/70 p-6 backdrop-blur card-ring sm:p-8">
+        <h2 class="text-lg font-semibold text-silver-100">Acesso restrito</h2>
+        <p class="mt-1 text-sm text-silver-400">Digite a senha de administrador para continuar.</p>
+        <form id="loginForm" class="mt-6 space-y-4" autocomplete="off">
+          <div>
+            <label class="mb-1.5 block text-xs font-medium uppercase tracking-wide text-silver-400">Senha de administrador</label>
+            <div class="relative">
+              <input id="senha" type="password"
+                class="w-full rounded-xl border border-silver-500/20 bg-navy-850 px-4 py-3 pr-11 text-silver-100 outline-none transition focus:border-gold-500/60 focus:ring-2 focus:ring-gold-500/20"
+                placeholder="••••••••••••" />
+              <button type="button" data-ver="senha" aria-label="Mostrar senha"
+                class="verSenha absolute right-2 top-1/2 -translate-y-1/2 rounded-lg p-2 text-silver-400 hover:text-gold-400">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+          <p id="loginErro" class="hidden text-sm text-red-400"></p>
+          <button type="submit"
+            class="w-full rounded-xl bg-gradient-to-b from-gold-400 to-gold-600 py-3 font-semibold text-navy-950 transition hover:from-gold-300 hover:to-gold-500 active:scale-[.99] glow-gold">
+            Entrar
+          </button>
+        </form>
+      </div>
+      <p class="mt-6 text-center text-xs leading-relaxed text-silver-500">Ferramenta interna. Não compartilhe a senha.</p>
+    </section>
+
+    <!-- ===================== CONFIGURAÇÃO (1º acesso neste aparelho) ===================== -->
+    <section id="config" class="hidden fade-in flex-1">
+      <div class="rounded-3xl border border-silver-500/15 bg-navy-900/70 p-6 backdrop-blur card-ring sm:p-8">
+        <h2 class="text-lg font-semibold text-silver-100">Primeiro acesso neste aparelho</h2>
+        <p class="mt-1 text-sm text-silver-400">
+          Informe a <span class="text-silver-100">palavra secreta</span> uma única vez. Ela fica guardada só neste
+          navegador (não vai para a internet nem para o código do site).
+        </p>
+        <form id="configForm" class="mt-6 space-y-4" autocomplete="off">
+          <div>
+            <label class="mb-1.5 block text-xs font-medium uppercase tracking-wide text-silver-400">Palavra secreta</label>
+            <div class="relative">
+              <input id="segredo" type="password" spellcheck="false"
+                class="w-full rounded-xl border border-silver-500/20 bg-navy-850 px-4 py-3 pr-11 font-mono text-silver-100 outline-none transition focus:border-gold-500/60 focus:ring-2 focus:ring-gold-500/20"
+                placeholder="Cole a PALAVRA_SECRETA" />
+              <button type="button" data-ver="segredo" aria-label="Mostrar"
+                class="verSenha absolute right-2 top-1/2 -translate-y-1/2 rounded-lg p-2 text-silver-400 hover:text-gold-400">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+          <p id="configErro" class="hidden text-sm text-red-400"></p>
+          <button type="submit"
+            class="w-full rounded-xl bg-gradient-to-b from-gold-400 to-gold-600 py-3 font-semibold text-navy-950 transition hover:from-gold-300 hover:to-gold-500 active:scale-[.99] glow-gold">
+            Salvar e continuar
+          </button>
+        </form>
+      </div>
+      <p class="mt-6 text-center text-xs leading-relaxed text-silver-500">
+        Dica: a palavra secreta é a mesma do app (SistemaLicenca.cs / gerar_chave.ps1).
+      </p>
+    </section>
+
+    <!-- ===================== GERADOR ===================== -->
+    <section id="painel" class="hidden flex-1">
+      <div class="rounded-3xl border border-silver-500/15 bg-navy-900/70 p-6 backdrop-blur card-ring sm:p-8">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-semibold text-silver-100">Gerar chave</h2>
+          <button id="sair" class="rounded-lg px-3 py-1.5 text-xs font-medium text-silver-400 ring-1 ring-silver-500/20 transition hover:text-gold-400 hover:ring-gold-500/40">Sair</button>
+        </div>
+        <p class="mt-1 text-sm text-silver-400">Cole o HWID enviado pelo cliente e gere a chave vitalícia.</p>
+
+        <div class="mt-6">
+          <label class="mb-1.5 block text-xs font-medium uppercase tracking-wide text-silver-400">HWID do cliente</label>
+          <input id="hwid" type="text" autocomplete="off" spellcheck="false"
+            class="w-full rounded-xl border border-silver-500/20 bg-navy-850 px-4 py-3 font-mono text-base tracking-wider text-silver-100 outline-none transition focus:border-gold-500/60 focus:ring-2 focus:ring-gold-500/20"
+            placeholder="XXXX-XXXX-XXXX-XXXX-XXXX" />
+          <p id="hwidInfo" class="mt-1.5 h-4 text-xs text-silver-500"></p>
+        </div>
+
+        <button id="gerar"
+          class="mt-3 w-full rounded-xl bg-gradient-to-b from-gold-400 to-gold-600 py-3 font-semibold text-navy-950 transition hover:from-gold-300 hover:to-gold-500 active:scale-[.99] glow-gold">
+          Gerar chave
+        </button>
+
+        <div id="resultado" class="mt-6 hidden fade-in">
+          <label class="mb-1.5 block text-xs font-medium uppercase tracking-wide text-silver-400">Chave de ativação</label>
+          <div class="flex items-stretch gap-2">
+            <div id="chave" class="flex-1 select-all rounded-xl border border-gold-500/40 bg-navy-850 px-4 py-3 font-mono text-base font-bold tracking-wider text-gold-300 break-all"></div>
+            <button id="copiar" title="Copiar chave"
+              class="shrink-0 rounded-xl border border-silver-500/25 bg-navy-800 px-4 font-medium text-silver-100 transition hover:border-gold-500/50 hover:text-gold-300">Copiar</button>
+          </div>
+          <p id="copiado" class="mt-2 hidden text-sm text-gold-400">Chave copiada para a área de transferência.</p>
+        </div>
+      </div>
+
+      <div class="mt-6 flex items-center justify-between text-xs text-silver-500">
+        <span>Receba o HWID → gere a chave → envie só a chave.</span>
+        <button id="esquecer" class="underline decoration-silver-500/40 underline-offset-2 hover:text-red-400">Esquecer segredo deste aparelho</button>
+      </div>
+    </section>
+
+  </div>
+
+<script>
+"use strict";
+/* ============================================================
+   CR TraderLayer — Gerador de Licenças (Opção B: código público limpo)
+   - A PALAVRA_SECRETA NÃO fica no código. É digitada no 1º acesso e guardada
+     apenas no localStorage deste navegador.
+   - A senha de admin aparece aqui só como HASH SHA-256 (não revela a senha).
+   - A chave de verificação confere se a palavra secreta digitada está correta,
+     sem expor o segredo (é um recorte de hash, via de mão única).
+   Cálculo idêntico ao C#: SHA-256(HWID_normalizado + "|" + segredo) -> 25 hex em grupos de 5.
+   ============================================================ */
+
+const SENHA_HASH  = "a3f4e20fede202f12e5279e04f830beec8c88306de144b67abe9424f9d08f5dd";
+const VERIF_HWID  = "00000000000000000000";
+const VERIF_KEY   = "7ADA2-38AF2-C8802-0C269-E19F6";
+const LS_KEY      = "crtl_segredo_v1";
+
+/* ---------- SHA-256 (nativo com reserva pura em JS) ---------- */
+async function sha256Hex(texto) {
+  const dados = new TextEncoder().encode(texto);
+  if (window.crypto && window.crypto.subtle && window.isSecureContext) {
+    try {
+      const buf = await window.crypto.subtle.digest("SHA-256", dados);
+      return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("").toUpperCase();
+    } catch (_) {}
+  }
+  return sha256Puro(dados).toUpperCase();
+}
+function sha256Puro(bytes) {
+  function rotr(n,x){return (x>>>n)|(x<<(32-n));}
+  const K=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
+  0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
+  0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
+  0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
+  0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
+  0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
+  0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
+  0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+  let h=[0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+  const l=bytes.length, withOne=l+1, total=withOne+((56-(withOne%64)+64)%64)+8;
+  const m=new Uint8Array(total); m.set(bytes); m[l]=0x80;
+  const dv=new DataView(m.buffer), bits=l*8;
+  dv.setUint32(total-4, bits>>>0); dv.setUint32(total-8, Math.floor(bits/0x100000000));
+  const w=new Uint32Array(64);
+  for(let off=0; off<total; off+=64){
+    for(let i=0;i<16;i++) w[i]=dv.getUint32(off+i*4);
+    for(let i=16;i<64;i++){
+      const s0=rotr(7,w[i-15])^rotr(18,w[i-15])^(w[i-15]>>>3);
+      const s1=rotr(17,w[i-2])^rotr(19,w[i-2])^(w[i-2]>>>10);
+      w[i]=(w[i-16]+s0+w[i-7]+s1)>>>0;
+    }
+    let [a,b,c,d,e,f,g,hh]=h;
+    for(let i=0;i<64;i++){
+      const S1=rotr(6,e)^rotr(11,e)^rotr(25,e), ch=(e&f)^(~e&g);
+      const t1=(hh+S1+ch+K[i]+w[i])>>>0;
+      const S0=rotr(2,a)^rotr(13,a)^rotr(22,a), maj=(a&b)^(a&c)^(b&c);
+      const t2=(S0+maj)>>>0;
+      hh=g;g=f;f=e;e=(d+t1)>>>0;d=c;c=b;b=a;a=(t1+t2)>>>0;
+    }
+    h[0]=(h[0]+a)>>>0;h[1]=(h[1]+b)>>>0;h[2]=(h[2]+c)>>>0;h[3]=(h[3]+d)>>>0;
+    h[4]=(h[4]+e)>>>0;h[5]=(h[5]+f)>>>0;h[6]=(h[6]+g)>>>0;h[7]=(h[7]+hh)>>>0;
+  }
+  return h.map(x=>x.toString(16).padStart(8,"0")).join("");
+}
+
+/* ---------- Regras idênticas ao C# ---------- */
+function normalizar(s){ return (s||"").toUpperCase().replace(/[^A-Z0-9]/g,""); }
+async function gerarChaveCom(segredo, hwid){
+  const hex = await sha256Hex(normalizar(hwid) + "|" + segredo);
+  const k = hex.substring(0,25);
+  return [k.slice(0,5),k.slice(5,10),k.slice(10,15),k.slice(15,20),k.slice(20,25)].join("-");
+}
+
+/* ---------- Estado ---------- */
+const $ = (id) => document.getElementById(id);
+let segredoAtual = null;
+function lerSegredo(){ try { return localStorage.getItem(LS_KEY); } catch(_) { return null; } }
+function salvarSegredo(s){ try { localStorage.setItem(LS_KEY, s); } catch(_) {} }
+function apagarSegredo(){ try { localStorage.removeItem(LS_KEY); } catch(_) {} }
+
+function mostrar(sec){ for (const s of ["login","config","painel"]) $(s).classList.toggle("hidden", s!==sec); }
+
+/* Mostrar/ocultar campos de senha */
+document.querySelectorAll(".verSenha").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const i = $(btn.getAttribute("data-ver"));
+    i.type = i.type === "password" ? "text" : "password"; i.focus();
+  });
+});
+
+/* Login */
+$("loginForm").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const erro = $("loginErro");
+  const h = (await sha256Hex($("senha").value)).toLowerCase();
+  if (h === SENHA_HASH) {
+    erro.classList.add("hidden");
+    $("senha").value = "";
+    segredoAtual = lerSegredo();
+    if (segredoAtual) { mostrar("painel"); $("hwid").focus(); }
+    else { mostrar("config"); $("segredo").focus(); }
+  } else {
+    erro.textContent = "Senha incorreta. Tente novamente.";
+    erro.classList.remove("hidden");
+    $("senha").select();
+  }
+});
+
+/* Configuração: valida e guarda a palavra secreta */
+$("configForm").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const erro = $("configErro");
+  const s = $("segredo").value;
+  if (!s) { erro.textContent = "Digite a palavra secreta."; erro.classList.remove("hidden"); return; }
+  const teste = await gerarChaveCom(s, VERIF_HWID);
+  if (teste !== VERIF_KEY) {
+    erro.textContent = "Palavra secreta incorreta (não confere com o app). Verifique e tente de novo.";
+    erro.classList.remove("hidden"); $("segredo").select(); return;
+  }
+  erro.classList.add("hidden");
+  salvarSegredo(s); segredoAtual = s; $("segredo").value = "";
+  mostrar("painel"); $("hwid").focus();
+});
+
+/* Sair (volta ao login, mantém o segredo guardado) */
+$("sair").addEventListener("click", () => { mostrar("login"); $("senha").value=""; $("senha").type="password"; $("senha").focus(); $("resultado").classList.add("hidden"); $("hwid").value=""; $("hwidInfo").textContent=""; });
+
+/* Esquecer segredo deste aparelho */
+$("esquecer").addEventListener("click", () => {
+  apagarSegredo(); segredoAtual = null;
+  mostrar("login"); $("senha").value=""; $("senha").type="password";
+  $("resultado").classList.add("hidden"); $("hwid").value="";
+});
+
+/* HWID: feedback */
+$("hwid").addEventListener("input", () => {
+  const n = normalizar($("hwid").value), info = $("hwidInfo");
+  if (n.length === 0) info.textContent = "";
+  else if (n.length === 20) { info.textContent = "HWID válido (20 caracteres)."; info.className = "mt-1.5 h-4 text-xs text-gold-400"; }
+  else { info.textContent = n.length + " de 20 caracteres."; info.className = "mt-1.5 h-4 text-xs text-silver-500"; }
+});
+
+/* Gerar */
+async function aoGerar(){
+  const n = normalizar($("hwid").value);
+  if (n.length !== 20) {
+    $("hwidInfo").textContent = "O HWID deve ter 20 caracteres (XXXX-XXXX-XXXX-XXXX-XXXX).";
+    $("hwidInfo").className = "mt-1.5 h-4 text-xs text-red-400"; $("hwid").focus(); return;
+  }
+  if (!segredoAtual) { mostrar("config"); return; }
+  const chave = await gerarChaveCom(segredoAtual, n);
+  $("chave").textContent = chave;
+  $("resultado").classList.remove("hidden"); $("copiado").classList.add("hidden");
+}
+$("gerar").addEventListener("click", aoGerar);
+$("hwid").addEventListener("keydown", (e) => { if (e.key === "Enter") aoGerar(); });
+
+/* Copiar */
+$("copiar").addEventListener("click", async () => {
+  const txt = $("chave").textContent; if (!txt) return;
+  try { await navigator.clipboard.writeText(txt); }
+  catch(_) {
+    const r=document.createRange(); r.selectNodeContents($("chave"));
+    const sel=getSelection(); sel.removeAllRanges(); sel.addRange(r);
+    try{ document.execCommand("copy"); }catch(_){} sel.removeAllRanges();
+  }
+  const ok=$("copiado"); ok.classList.remove("hidden"); setTimeout(()=>ok.classList.add("hidden"),2200);
+});
+
+/* Início: sempre começa pelo login */
+mostrar("login");
+$("senha").focus();
+</script>
+</body>
+</html>
